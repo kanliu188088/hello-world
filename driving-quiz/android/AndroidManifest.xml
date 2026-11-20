@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="app.drivingquiz.tw" android:versionCode="1" android:versionName="1.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="app.drivingquiz.tw" android:versionCode="2" android:versionName="1.1">
   <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34"/>
   <queries><intent><action android:name="android.intent.action.TTS_SERVICE"/></intent></queries>
   <application android:label="汽車筆試練習" android:icon="@mipmap/ic_launcher" android:allowBackup="true" android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar">
