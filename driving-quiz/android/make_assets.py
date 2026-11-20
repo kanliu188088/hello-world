@@ -4,7 +4,7 @@ here = os.path.dirname(os.path.abspath(__file__)); web = os.path.join(here, '..'
 rd = lambda n: open(os.path.join(web, n), encoding='utf-8').read()
 os.makedirs(os.path.join(here, 'assets'), exist_ok=True)
 with open(os.path.join(here, 'assets', 'data.js'), 'w', encoding='utf-8') as f:
-    f.write('window.QDATA=' + rd('questions.json') + ';\nwindow.QIMG=' + rd('images.json') + ';\n')
+    f.write('window.QDATA=' + rd('questions.json') + ';\nwindow.QIMG=' + rd('images.json') + ';\nwindow.QVI=' + rd('vi.json') + ';\n')
 with open(os.path.join(here, 'assets', 'index.html'), 'w', encoding='utf-8') as f:
     f.write('<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1">'
