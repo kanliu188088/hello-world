@@ -1,0 +1,4 @@
+tools/
+build/
+assets/
+*.p12
