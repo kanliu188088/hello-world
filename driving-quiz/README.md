@@ -1,0 +1,47 @@
+# 汽車筆試題庫練習 (driving test practice)
+
+Study and mock-exam app for the Taiwan car written test question bank (1,090 questions, Chinese interface, optional Vietnamese line under each question).
+
+- **Study**: one question at a time; "讀給我聽" reads the question and options aloud in Chinese, then shows and reads the answer.
+- **Exam**: random questions, silent, no answers shown; score and wrong-answer review at the end.
+
+## Layout
+
+- `web/` — the page (`driving-quiz.html`) and its data (`questions.json`, `images.json`, and `vi.json`, an unofficial machine translation of every question into Vietnamese; `desc.json`, AI-written descriptions of the 192 pictures in Chinese and Vietnamese).
+- `android/` — WebView wrapper with a native text-to-speech bridge, and the APK build scripts.
+- `extract/` — scripts that produced the data from the question-bank PDF (PDF not included).
+
+## GitHub Pages
+
+`index.html` in this folder is the single-file build, so once this folder is on the branch GitHub Pages serves, the app is at `https://<user>.github.io/<repo>/driving-quiz/`. Regenerate it after changing anything in `web/`:
+
+```bash
+python3 web/make_single.py index.html
+```
+
+## Single-file version (Safari on iPhone, iPad, Mac)
+
+```bash
+python3 web/make_single.py
+```
+
+Writes `web/driving-quiz-offline.html`, one file with all data inlined. It uses the browser's own Chinese (zh-TW) voice.
+
+## Build the APK
+
+```bash
+cd android
+./fetch-tools.sh
+KEYSTORE_PASS=your-password ./build.sh
+```
+
+Output: `android/build/driving-quiz.apk` (Android 7.0+, v2 signature). The signing key `release.p12` is created on first build and is not committed; keep it, because an APK signed with a different key cannot update an installed copy.
+
+## Regenerate the data from the PDF
+
+Needs `pdfplumber` and `Pillow`. Run from `extract/`:
+
+```bash
+python3 parse.py question-bank.pdf
+python3 build.py question-bank.pdf ../web
+```
