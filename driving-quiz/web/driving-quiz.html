@@ -1,0 +1,335 @@
+<title>汽車筆試題庫 練習</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one phone-width column; a single question card with a big Read button, like a flash card at a driving school. */
+:root{
+  --bg:#f3f5f8; --card:#ffffff; --fg:#17212e; --muted:#5b6878; --line:#d5dbe3;
+  --sign:#0b4ea2; --sign-fg:#ffffff; --sign-soft:#e3edfa;
+  --read:#ffe27a; --read-fg:#2a2100;
+  --ok:#1b7f45; --ok-soft:#dff3e6; --bad:#b3261e; --bad-soft:#fbe3e1;
+  --imgbg:#ffffff;
+  --cjk:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10161f; --card:#1a2330; --fg:#e8edf4; --muted:#9aa7b8; --line:#33404f;
+  --sign:#5b9bf0; --sign-fg:#06182f; --sign-soft:#1d3050;
+  --read:#6b5700; --read-fg:#fff3c2;
+  --ok:#5fd08a; --ok-soft:#173524; --bad:#ff8a80; --bad-soft:#40201e; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#10161f; --card:#1a2330; --fg:#e8edf4; --muted:#9aa7b8; --line:#33404f;
+  --sign:#5b9bf0; --sign-fg:#06182f; --sign-soft:#1d3050;
+  --read:#6b5700; --read-fg:#fff3c2;
+  --ok:#5fd08a; --ok-soft:#173524; --bad:#ff8a80; --bad-soft:#40201e; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--cjk);font-size:17px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 40px}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+h1{font-size:1.15rem;margin:0;line-height:1.3}
+h1 small,.vi{font-size:.8em;color:var(--muted);font-weight:400}
+h1 small{display:block}
+button{font:inherit;color:inherit;cursor:pointer;border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 14px;line-height:1.25;min-height:48px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sign);outline-offset:2px}
+button:disabled{opacity:.45;cursor:default}
+button .vi{display:block;font-size:.72em}
+.primary{background:var(--sign);color:var(--sign-fg);border-color:var(--sign);font-weight:700}
+.primary .vi{color:inherit;opacity:.85}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
+.num{font-weight:700;color:var(--sign);font-variant-numeric:tabular-nums}
+.pic{background:var(--imgbg);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center}
+.pic img{max-height:220px;height:auto;vertical-align:middle}
+.pic.full img{max-height:none;width:100%}
+.stem{font-size:1.2rem;font-weight:600;margin:0;border-radius:6px;padding:2px 4px}
+.opts{display:flex;flex-direction:column;gap:8px;list-style:none;margin:0;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;text-align:left;background:var(--card);min-width:0}
+.opt b{flex:none;width:1.9em;height:1.9em;border-radius:50%;background:var(--sign-soft);color:var(--sign);display:grid;place-items:center;font-size:.9em}
+.opt span{min-width:0;overflow-wrap:anywhere}
+.reading{background:var(--read)!important;color:var(--read-fg)}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct b{background:var(--ok);color:var(--card)}
+.opt.chosen{border-color:var(--sign);background:var(--sign-soft)}
+.opt.chosen b{background:var(--sign);color:var(--sign-fg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.answer{border-radius:10px;padding:10px 12px;background:var(--ok-soft);color:var(--ok);font-weight:700;font-size:1.1rem}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1 1 0;min-width:0}
+.big{font-size:1.2rem;min-height:60px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.9rem;color:var(--muted)}
+.tools label{display:flex;align-items:center;gap:6px}
+input[type=number],select{font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:8px;min-height:44px}
+input[type=number]{width:6em}
+.note{color:var(--muted);font-size:.85rem;margin:0}
+.warn{background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:10px 12px;font-size:.9rem}
+.score{font-size:2.2rem;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.pass{color:var(--ok)} .fail{color:var(--bad)}
+.dots{display:flex;flex-wrap:wrap;gap:4px}
+.dots button{min-height:0;padding:0;width:32px;height:32px;border-radius:6px;font-size:.75rem;font-variant-numeric:tabular-nums}
+.dots .done{background:var(--sign-soft);border-color:var(--sign)}
+.dots .cur{outline:2px solid var(--sign)}
+.review{display:flex;flex-direction:column;gap:10px}
+.review .item{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.review p{margin:0}
+.review img{max-height:120px}
+h2{font-size:1.05rem;margin:0}
+.vt{display:block;font-weight:400;font-size:.86em;line-height:1.45;color:var(--muted);margin-top:3px}
+.reading .vt,.answer .vt{color:inherit}
+#prefs{justify-content:space-between}
+input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
+#rateOut{font-variant-numeric:tabular-nums;min-width:2.6em}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>汽車筆試題庫 練習<small>Luyện thi lý thuyết lái xe ô tô · 1090 題</small></h1>
+    <button id="modeBtn" class="primary">開始考試<span class="vi">Bắt đầu thi</span></button>
+  </header>
+
+  <div class="tools" id="prefs" hidden>
+    <label for="lang">顯示 <span class="vi">Hiển thị</span>
+      <select id="lang"><option value="zh">中文</option><option value="both">中文＋越南文 Trung + Việt</option></select></label>
+    <label for="rate">語音速度 <span class="vi">Tốc độ đọc</span>
+      <input type="range" id="rate" min="0.4" max="1.6" step="0.1" value="0.8"><output id="rateOut" for="rate">0.8×</output></label>
+  </div>
+
+  <div id="loading" class="card">載入題目中… <span class="vi">Đang tải câu hỏi…</span></div>
+
+  <!-- 學習 -->
+  <section id="study" hidden class="wrap">
+    <div class="card">
+      <div class="meta"><span class="num" id="sNum"></span><span id="sSec"></span></div>
+      <div class="pic" id="sPic" hidden><img id="sImg" alt="題目圖示"></div>
+      <p class="stem" id="sStem"></p>
+      <ol class="opts" id="sOpts"></ol>
+      <div class="answer" id="sAns" hidden></div>
+      <div id="sWarn" class="warn" hidden></div>
+      <div class="row">
+        <button id="readBtn" class="primary big">讀給我聽<span class="vi">Đọc cho tôi nghe</span></button>
+        <button id="ansBtn" class="big">看答案<span class="vi">Xem đáp án</span></button>
+      </div>
+      <div class="row">
+        <button id="prevBtn">← 上一題<span class="vi">Câu trước</span></button>
+        <button id="nextBtn">下一題 →<span class="vi">Câu sau</span></button>
+      </div>
+    </div>
+    <div class="tools">
+      <label for="jump">跳到第 <input type="number" id="jump" min="1" max="1090" inputmode="numeric"> 題 <span class="vi">Đến câu</span></label>
+    </div>
+    <p class="note">按「讀給我聽」會用中文念題目和三個選項，念完後顯示並念出答案。<br><span class="vi">Bấm “Đọc” để nghe câu hỏi và 3 lựa chọn bằng tiếng Trung, sau đó sẽ hiện đáp án.</span></p>
+  </section>
+
+  <!-- 考試設定 -->
+  <section id="setup" hidden class="card">
+    <h2>模擬考試 <span class="vi">Thi thử</span></h2>
+    <p class="note">考試時不會顯示答案。聲音可以選擇開或關。85 分及格。<br><span class="vi">Khi thi sẽ không hiện đáp án. Có thể chọn bật hoặc tắt âm thanh. Đạt từ 85 điểm.</span></p>
+    <div class="tools">
+      <label for="exCount">題數 <span class="vi">Số câu</span>
+        <select id="exCount"><option>10</option><option>20</option><option selected>40</option><option>50</option></select></label>
+      <label for="exSound">聲音 <span class="vi">Âm thanh</span>
+        <select id="exSound"><option value="off">不出聲 Không đọc</option><option value="on">可以念題目 Có đọc câu hỏi</option></select></label>
+      <label for="exScope">範圍 <span class="vi">Phạm vi</span>
+        <select id="exScope"><option value="all">全部 1090 題 Tất cả</option><option value="seen">只考學過的題目 Chỉ câu đã học</option></select></label>
+    </div>
+    <div class="row">
+      <button id="backBtn">← 回去學習<span class="vi">Quay lại học</span></button>
+      <button id="startBtn" class="primary">開始<span class="vi">Bắt đầu</span></button>
+    </div>
+  </section>
+
+  <!-- 考試 -->
+  <section id="exam" hidden class="wrap">
+    <div class="card">
+      <div class="meta"><span class="num" id="eNum"></span><span id="eDone"></span></div>
+      <div class="pic" id="ePic" hidden><img id="eImg" alt="題目圖示"></div>
+      <p class="stem" id="eStem"></p>
+      <div class="opts" id="eOpts"></div>
+      <button id="eRead" class="big" hidden>讀給我聽<span class="vi">Đọc cho tôi nghe</span></button>
+      <div class="row">
+        <button id="ePrev">← 上一題<span class="vi">Câu trước</span></button>
+        <button id="eNext" class="primary">下一題 →<span class="vi">Câu sau</span></button>
+      </div>
+    </div>
+    <div class="dots" id="eDots"></div>
+    <div id="eConfirm" class="warn" hidden></div>
+    <div class="row">
+      <button id="quitBtn">放棄考試<span class="vi">Thoát</span></button>
+      <button id="submitBtn" class="primary">交卷<span class="vi">Nộp bài</span></button>
+    </div>
+  </section>
+
+  <!-- 成績 -->
+  <section id="result" hidden class="card">
+    <h2>成績 <span class="vi">Kết quả</span></h2>
+    <div class="score" id="rScore"></div>
+    <div id="rText"></div>
+    <div class="row">
+      <button id="rStudy">回去學習<span class="vi">Quay lại học</span></button>
+      <button id="rAgain" class="primary">再考一次<span class="vi">Thi lại</span></button>
+    </div>
+    <div class="review" id="rReview"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const SECS=[[424,'架構一 正確觀念與態度'],[654,'架構二 主動停讓文化'],[1090,'架構三 安全駕駛能力']];
+const DIGIT=['','一','二','三'];
+let Q=[],VI=[],IMG={},cur=0,maxSeen=0,revealed=false,speakToken=0,exam=null;
+
+function show(name){for(const s of ['loading','study','setup','exam','result'])$(s).hidden=s!==name;
+  $('modeBtn').hidden=name!=='study'; $('prefs').hidden=name==='loading'||name==='result'; stopSpeak(); window.scrollTo(0,0)}
+function setPic(pic,img,q){ if(q.i&&IMG[q.n]){img.src=IMG[q.n];pic.hidden=false;pic.classList.toggle('full',q.i===2)} else {pic.hidden=true;img.removeAttribute('src')} }
+function stemText(q){return q.q|| (q.i?'請看圖，選出正確的意思。':'')}
+function optText(q,k){return q.o[k]||('圖 '+(k+1))}
+function both(){return $('lang').value==='both'}
+function viStem(q){if(!both())return '';const v=VI[q.n-1];return (v&&v.q)||(!q.q&&q.i?'Xem hình và chọn ý nghĩa đúng.':'')}
+function viOpt(q,k){if(!both())return '';const v=VI[q.n-1];return (v&&v.o&&v.o[k])||''}
+function fill(el,zh,vt){el.textContent=zh;if(vt){const s=document.createElement('span');s.className='vt';s.lang='vi';s.textContent=vt;el.append(s)}}
+function refresh(){ if(!Q.length)return; if(!$('study').hidden){const r=revealed;renderStudy();if(r)reveal()} else if(exam&&!$('exam').hidden)renderExam() }
+
+/* ---------- 學習 ---------- */
+function renderStudy(){
+  const q=Q[cur]; revealed=false; stopSpeak();
+  $('sNum').textContent='第 '+q.n+' 題 / 1090';
+  $('sSec').textContent=SECS.find(s=>q.n<=s[0])[1];
+  setPic($('sPic'),$('sImg'),q);
+  fill($('sStem'),stemText(q),viStem(q));
+  const ol=$('sOpts'); ol.textContent='';
+  q.o.forEach((o,k)=>{const li=document.createElement('li');li.className='opt';li.id='so'+k;
+    const b=document.createElement('b');b.textContent=k+1;const s=document.createElement('span');fill(s,optText(q,k),viOpt(q,k));li.append(b,s);ol.append(li)});
+  $('sAns').hidden=true; $('prevBtn').disabled=cur===0; $('nextBtn').disabled=cur===Q.length-1;
+  $('jump').value=q.n;
+  if(cur>maxSeen){maxSeen=cur;store.set('dq_max',maxSeen)}
+  store.set('dq_cur',cur);
+}
+function reveal(){
+  const q=Q[cur]; revealed=true;
+  document.querySelectorAll('#sOpts .opt').forEach((li,k)=>li.classList.toggle('correct',k===q.a-1));
+  fill($('sAns'),'答案 Đáp án：('+q.a+') '+(q.o[q.a-1]||''),viOpt(q,q.a-1));
+  $('sAns').hidden=false;
+}
+function go(i){cur=Math.max(0,Math.min(Q.length-1,i));renderStudy()}
+
+/* ---------- 朗讀 ---------- */
+const NATIVE=window.AndroidTTS||null; let ttsId=0,ttsCb=null;
+window.__tts=(id,ok)=>{ if(ttsCb&&ttsCb.id===String(id)){const f=ttsCb.fn;ttsCb=null;f(ok)} };
+const synth=NATIVE?null:window.speechSynthesis;
+function zhVoice(){ if(!synth)return null; const vs=synth.getVoices();
+  return vs.find(v=>/zh[-_]TW/i.test(v.lang))||vs.find(v=>/^(zh|cmn)/i.test(v.lang))||null }
+function stopSpeak(){speakToken++; ttsCb=null; if(NATIVE)NATIVE.stop(); if(synth)synth.cancel(); document.querySelectorAll('.reading').forEach(e=>e.classList.remove('reading'));
+  setReadLabel(false); reading=false}
+function setReadLabel(on){for(const id of ['readBtn','eRead'])$(id).firstChild.textContent=on?'停止 ■':'讀給我聽'}
+let reading=false;
+function speakParts(parts,done){
+  const token=++speakToken; let i=0; reading=true; setReadLabel(true);
+  const voice=zhVoice(), rate=parseFloat($('rate').value)||0.8;
+  (function next(){
+    document.querySelectorAll('.reading').forEach(e=>e.classList.remove('reading'));
+    if(token!==speakToken)return;
+    if(i>=parts.length){reading=false;setReadLabel(false);done&&done();return}
+    const p=parts[i++]; if(p.before)p.before(); if(p.el)p.el.classList.add('reading');
+    if(NATIVE){ const id=String(++ttsId); ttsCb={id,fn:ok=>{ if(token!==speakToken)return; if(!ok){warn('手機沒有中文語音。請到「設定 → 文字轉語音」安裝中文（台灣）語音資料。 Điện thoại chưa có giọng đọc tiếng Trung. Vào Cài đặt → Chuyển văn bản thành giọng nói để cài tiếng Trung (Đài Loan).',true)} next() }};
+      NATIVE.speak(p.text,rate,id); return }
+    const u=new SpeechSynthesisUtterance(p.text); u.lang='zh-TW'; if(voice)u.voice=voice; u.rate=rate;
+    u.onend=next; u.onerror=e=>{ if(token===speakToken){ if(e.error!=='interrupted'&&e.error!=='canceled')warn('這個裝置無法朗讀中文。請改用 Chrome 或 Safari 瀏覽器開啟。Thiết bị này không đọc được tiếng Trung, hãy mở bằng Chrome hoặc Safari.'); next() } };
+    window._u=u; synth.speak(u);
+  })();
+}
+function warn(t,settings){const w=exam?$('eConfirm'):$('sWarn');w.textContent=t;w.hidden=false;
+  if(settings&&NATIVE&&NATIVE.openSettings){const b=document.createElement('button');b.textContent='打開語音設定 Mở cài đặt';b.style.cssText='display:block;margin-top:8px';b.onclick=()=>NATIVE.openSettings();w.append(b)}}
+function readCurrent(){
+  if(reading){stopSpeak();return}
+  if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。Trình duyệt này không hỗ trợ đọc, hãy mở bằng Chrome hoặc Safari.');reveal();return}
+  $('sWarn').hidden=true; if(synth&&(synth.speaking||synth.pending))synth.cancel();
+  const q=Q[cur]; const parts=[{text:'第'+q.n+'題。'+stemText(q),el:$('sStem')}];
+  q.o.forEach((o,k)=>parts.push({text:DIGIT[k+1]+'。'+(o||'第'+DIGIT[k+1]+'個圖'),el:$('so'+k)}));
+  parts.push({before:reveal,text:'答案是，'+DIGIT[q.a]+'。'+(q.o[q.a-1]||''),el:$('sAns')});
+  speakParts(parts);
+}
+function readExam(){
+  if(reading){stopSpeak();return}
+  if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。Trình duyệt này không hỗ trợ đọc, hãy mở bằng Chrome hoặc Safari.');return}
+  $('eConfirm').hidden=true; if(synth&&(synth.speaking||synth.pending))synth.cancel();
+  const q=Q[exam.ids[exam.pos]]; const parts=[{text:stemText(q),el:$('eStem')}];
+  q.o.forEach((o,k)=>parts.push({text:DIGIT[k+1]+'。'+(o||'第'+DIGIT[k+1]+'個圖'),el:$('eo'+k)}));
+  speakParts(parts);
+}
+if(synth){synth.getVoices(); if(synth.addEventListener)synth.addEventListener('voiceschanged',()=>{})}
+
+/* ---------- 考試 ---------- */
+function startExam(){
+  const n=parseInt($('exCount').value,10); let pool=Q.map((_,i)=>i);
+  if($('exScope').value==='seen')pool=pool.slice(0,Math.max(maxSeen+1,1));
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+  exam={ids:pool.slice(0,Math.min(n,pool.length)),ans:{},pos:0,sound:$('exSound').value==='on'};
+  show('exam'); renderExam();
+}
+function renderExam(){
+  const q=Q[exam.ids[exam.pos]], N=exam.ids.length; stopSpeak(); $('eRead').hidden=!exam.sound;
+  $('eNum').textContent='第 '+(exam.pos+1)+' / '+N+' 題';
+  $('eDone').textContent='已作答 Đã làm '+Object.keys(exam.ans).length+' / '+N;
+  setPic($('ePic'),$('eImg'),q); fill($('eStem'),stemText(q),viStem(q));
+  const box=$('eOpts'); box.textContent='';
+  q.o.forEach((o,k)=>{const bt=document.createElement('button');bt.type='button';bt.id='eo'+k;bt.className='opt'+(exam.ans[exam.pos]===k+1?' chosen':'');
+    bt.setAttribute('aria-pressed',exam.ans[exam.pos]===k+1);
+    const b=document.createElement('b');b.textContent=k+1;const s=document.createElement('span');fill(s,optText(q,k),viOpt(q,k));bt.append(b,s);
+    bt.onclick=()=>{exam.ans[exam.pos]=k+1;renderExam()};box.append(bt)});
+  $('ePrev').disabled=exam.pos===0; $('eNext').disabled=exam.pos===N-1;
+  const dots=$('eDots'); dots.textContent='';
+  exam.ids.forEach((_,i)=>{const d=document.createElement('button');d.textContent=i+1;d.className=(exam.ans[i]?'done':'')+(i===exam.pos?' cur':'');
+    d.setAttribute('aria-label','第 '+(i+1)+' 題');d.onclick=()=>{exam.pos=i;renderExam()};dots.append(d)});
+  $('eConfirm').hidden=true; exam.confirm=false;
+}
+function submitExam(){
+  const N=exam.ids.length, left=N-Object.keys(exam.ans).length;
+  if(left>0&&!exam.confirm){exam.confirm=true;$('eConfirm').textContent='還有 '+left+' 題沒有作答。再按一次「交卷」就會交卷。 Còn '+left+' câu chưa làm. Bấm “Nộp bài” lần nữa để nộp.';$('eConfirm').hidden=false;return}
+  let right=0; const wrong=[];
+  exam.ids.forEach((id,i)=>{ if(exam.ans[i]===Q[id].a)right++; else wrong.push([id,exam.ans[i]]) });
+  const score=Math.round(right/N*100), pass=score>=85;
+  $('rScore').textContent=score+' 分'; $('rScore').className='score '+(pass?'pass':'fail');
+  $('rText').textContent=(pass?'及格 Đạt':'不及格 Chưa đạt')+' · 答對 Đúng '+right+' / '+N+' · 答錯 Sai '+wrong.length;
+  const rv=$('rReview'); rv.textContent='';
+  if(wrong.length){const h=document.createElement('h2');h.textContent='答錯的題目 Câu sai';rv.append(h)}
+  wrong.forEach(([id,mine])=>{const q=Q[id],d=document.createElement('div');d.className='item';
+    const p=document.createElement('p');const b=document.createElement('b');b.className='num';b.textContent='第 '+q.n+' 題 ';p.append(b,stemText(q));if(viStem(q)){const v=document.createElement('span');v.className='vt';v.lang='vi';v.textContent=viStem(q);p.append(v)}d.append(p);
+    if(q.i&&IMG[q.n]){const im=document.createElement('img');im.src=IMG[q.n];im.alt='題目圖示';const w=document.createElement('div');w.className='pic'+(q.i===2?' full':'');w.append(im);d.append(w)}
+    const m=document.createElement('p');m.className='fail';fill(m,'你的答案 Bạn chọn：'+(mine?'('+mine+') '+(q.o[mine-1]||''):'沒有作答 Chưa làm'),mine?viOpt(q,mine-1):'');
+    const c=document.createElement('p');c.className='pass';fill(c,'正確答案 Đáp án：('+q.a+') '+(q.o[q.a-1]||''),viOpt(q,q.a-1));
+    const g=document.createElement('button');g.textContent='去學這一題 Học câu này';g.onclick=()=>{show('study');go(id)};
+    d.append(m,c,g);rv.append(d)});
+  stopSpeak(); exam=null; show('result');
+}
+
+/* ---------- 事件 ---------- */
+$('readBtn').onclick=readCurrent;
+$('ansBtn').onclick=()=>{stopSpeak();reveal()};
+$('prevBtn').onclick=()=>go(cur-1); $('nextBtn').onclick=()=>go(cur+1);
+$('jump').onchange=e=>{const v=parseInt(e.target.value,10); if(v>=1&&v<=Q.length)go(v-1); else e.target.value=Q[cur].n};
+function showRate(){$('rateOut').textContent=(parseFloat($('rate').value)||0.8).toFixed(1)+'×'}
+$('rate').oninput=e=>{showRate();store.set('dq_rate',e.target.value)};
+$('lang').onchange=e=>{store.set('dq_lang',e.target.value);refresh()};
+$('modeBtn').onclick=()=>show('setup');
+$('backBtn').onclick=$('rStudy').onclick=()=>{show('study');renderStudy()};
+$('quitBtn').onclick=()=>{exam=null;show('study');renderStudy()};
+$('startBtn').onclick=startExam; $('rAgain').onclick=()=>show('setup');
+$('ePrev').onclick=()=>{exam.pos--;renderExam()}; $('eNext').onclick=()=>{exam.pos++;renderExam()};
+$('submitBtn').onclick=submitExam; $('eRead').onclick=readExam;
+
+/* ---------- 啟動 ---------- */
+function start(saved){
+  (window.QDATA?Promise.resolve(window.QDATA):fetch('questions.json').then(r=>r.json())).then(d=>{
+    Q=d; cur=Math.min(Q.length-1,parseInt((saved&&saved.cur)??store.get('dq_cur','0'),10)||0);
+    maxSeen=Math.max(cur,parseInt(store.get('dq_max','0'),10)||0);
+    const r=store.get('dq_rate',null); if(r)$('rate').value=r; showRate(); $('lang').value=store.get('dq_lang','both')==='zh'?'zh':'both';
+    (window.QVI?Promise.resolve(window.QVI):fetch('vi.json').then(r=>r.json())).then(v=>{VI=v;refresh()}).catch(()=>{});
+    show('study'); renderStudy();
+    return (window.QIMG?Promise.resolve(window.QIMG):fetch('images.json').then(r=>r.json())).then(m=>{IMG=m; if(!$('study').hidden){const q=Q[cur];setPic($('sPic'),$('sImg'),q)} else if(exam)renderExam()});
+  }).catch(()=>{$('loading').textContent='題目載入失敗，請重新整理頁面。 Không tải được câu hỏi, hãy tải lại trang.'});
+}
+const hot=window.claude&&window.claude.hot;
+if(hot&&hot.snapshot)hot.snapshot(()=>({cur}));
+if(hot&&hot.ready)hot.ready(start); else start((hot&&hot.data)||{});
+})();
+</script>
