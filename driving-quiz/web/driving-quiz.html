@@ -72,6 +72,8 @@ input[type=number]{width:6em}
 .review p{margin:0}
 .review img{max-height:120px}
 h2{font-size:1.05rem;margin:0}
+.foot{max-width:640px;margin:18px auto 0;text-align:center;color:var(--muted);font-size:.8rem;line-height:1.6}
+.btnlink{display:grid;place-items:center;min-height:48px;border-radius:10px;background:var(--sign);color:var(--sign-fg);font-weight:700;text-decoration:none;padding:10px 14px}
 .vt{display:block;font-weight:400;font-size:.86em;line-height:1.45;color:var(--muted);margin-top:3px}
 .reading .vt,.answer .vt{color:inherit}
 #prefs{justify-content:space-between}
@@ -86,6 +88,15 @@ input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
     <h1>汽車筆試題庫 練習<small>新版汽車筆試題庫 · 1090 題</small></h1>
     <button id="modeBtn" class="primary">開始考試</button>
   </header>
+
+  <div id="inApp" class="warn" hidden>
+    <strong>請改用 Safari 或 Chrome 開啟，才能聽到朗讀。</strong>
+    <div class="row" style="margin-top:8px">
+      <a id="openExt" class="btnlink" href="#">用瀏覽器開啟</a>
+      <button id="copyUrl" type="button">複製網址</button>
+    </div>
+    <input id="urlBox" type="text" readonly aria-label="網址" style="width:100%;margin-top:8px;font:inherit;padding:8px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)">
+  </div>
 
   <div class="tools" id="prefs" hidden>
     <label for="lang">顯示
@@ -175,6 +186,7 @@ input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
   </section>
 </div>
 
+<footer class="foot">屏東基督教醫院 敬贈<br>題庫版本 115.5.29，考試內容以監理機關公告為準。越南文與圖形說明由 AI 產生，僅供參考。</footer>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -224,12 +236,25 @@ function go(i){cur=Math.max(0,Math.min(Q.length-1,i));renderStudy()}
 const NATIVE=window.AndroidTTS||null; let ttsId=0,ttsCb=null;
 window.__tts=(id,ok)=>{ if(ttsCb&&ttsCb.id===String(id)){const f=ttsCb.fn;ttsCb=null;f(ok)} };
 const synth=NATIVE?null:window.speechSynthesis;
+/* LINE、Facebook 等 App 內建的瀏覽器通常不能朗讀：引導改用 Safari / Chrome */
+(function(){
+  const ua=navigator.userAgent||''; let top=true; try{top=window.self===window.top}catch(e){top=false}
+  if(NATIVE||!top||!/^https?:$/.test(location.protocol)||!/Line\/|FBAN|FBAV|FB_IAB|Instagram|MicroMessenger|; wv\)/i.test(ua))return;
+  const clean=location.origin+location.pathname;
+  if(/Line\//i.test(ua)&&!/openExternalBrowser=1/.test(location.search)){location.replace(clean+'?openExternalBrowser=1');return}
+  const hp=location.host+location.pathname;
+  $('openExt').href=/Android/i.test(ua)?'intent://'+hp+'#Intent;scheme=https;package=com.android.chrome;end':'x-safari-https://'+hp;
+  $('urlBox').value=clean; $('inApp').hidden=false;
+  $('copyUrl').onclick=()=>{const done=()=>{$('copyUrl').textContent='已複製'};
+    const fb=()=>{$('urlBox').focus();$('urlBox').select()};
+    try{navigator.clipboard.writeText(clean).then(done,fb)}catch(e){fb()}};
+})();
 function zhVoice(){ if(!synth)return null; const vs=synth.getVoices();
-  return vs.find(v=>/zh[-_]TW/i.test(v.lang))||vs.find(v=>/^(zh|cmn)/i.test(v.lang))||null }
+  return vs.find(v=>/zh[-_]TW|cmn[-_]Hant/i.test(v.lang))||vs.find(v=>/^(zh[-_]CN|cmn)/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang)&&!/HK|yue/i.test(v.lang))||null }
 function stopSpeak(){speakToken++; ttsCb=null; if(NATIVE)NATIVE.stop(); if(synth)synth.cancel(); document.querySelectorAll('.reading').forEach(e=>e.classList.remove('reading'));
   setReadLabel(false); reading=false}
 function setReadLabel(on){for(const id of ['readBtn','eRead'])$(id).firstChild.textContent=on?'停止 ■':'讀給我聽'}
-let reading=false;
+let reading=false, ttsSkip=0;
 function speakParts(parts,done){
   const token=++speakToken; let i=0; reading=true; setReadLabel(true);
   const voice=zhVoice(), rate=parseFloat($('rate').value)||0.8;
@@ -240,9 +265,18 @@ function speakParts(parts,done){
     const p=parts[i++]; if(p.before)p.before(); if(p.el)p.el.classList.add('reading');
     if(NATIVE){ const id=String(++ttsId); ttsCb={id,fn:ok=>{ if(token!==speakToken)return; if(!ok){warn('手機沒有中文語音。請到「設定 → 文字轉語音」安裝中文（台灣）語音資料。',true)} next() }};
       NATIVE.speak(p.text,rate,id); return }
-    const u=new SpeechSynthesisUtterance(p.text); u.lang='zh-TW'; if(voice)u.voice=voice; u.rate=rate;
-    u.onend=next; u.onerror=e=>{ if(token===speakToken){ if(e.error!=='interrupted'&&e.error!=='canceled')warn('這個裝置無法朗讀中文。請改用 Chrome 或 Safari 瀏覽器開啟。'); next() } };
-    window._u=u; synth.speak(u);
+    /* 依序嘗試：找到的中文語音 → 只指定 zh-TW → zh-CN → zh。Chrome 在某些裝置上指定語音或 zh-TW 會失敗，但換一種就能念。 */
+    const tries=[]; if(voice)tries.push({voice,lang:voice.lang}); tries.push({lang:'zh-TW'},{lang:'zh-CN'},{lang:'zh'});
+    (function attempt(k){
+      const t=tries[Math.min(k,tries.length-1)], u=new SpeechSynthesisUtterance(p.text); u.lang=t.lang; if(t.voice)u.voice=t.voice; u.rate=rate;
+      u.onstart=()=>{ttsSkip=k};
+      u.onend=()=>{ if(token===speakToken)next() };
+      u.onerror=e=>{ if(token!==speakToken)return;
+        if(e.error==='interrupted'||e.error==='canceled'){next();return}
+        if(k+1<tries.length){attempt(k+1);return}
+        ttsSkip=0; warn((/Android/i.test(navigator.userAgent)?'這支手機的 Chrome 沒有中文語音。請到手機「設定 → 文字轉語音輸出」安裝中文語音資料，再重新開啟這個網頁。':'這個瀏覽器沒有中文語音可以朗讀。iPhone、iPad 請改用 Safari 開啟；電腦請安裝中文語音，或改用 Edge 瀏覽器。')+'（錯誤代碼：'+(e.error||'unknown')+'）'); next() };
+      window._u=u; try{synth.resume()}catch(e){} synth.speak(u);
+    })(Math.min(ttsSkip,tries.length-1));
   })();
 }
 function warn(t,settings){const w=exam?$('eConfirm'):$('sWarn');w.textContent=t;w.hidden=false;
