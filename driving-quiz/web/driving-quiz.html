@@ -75,6 +75,8 @@ h2{font-size:1.05rem;margin:0}
 .vt{display:block;font-weight:400;font-size:.86em;line-height:1.45;color:var(--muted);margin-top:3px}
 .reading .vt,.answer .vt{color:inherit}
 #prefs{justify-content:space-between}
+.desc{margin:0;font-size:.95rem;background:var(--sign-soft);border-radius:8px;padding:8px 10px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--sign)}
 input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
 #rateOut{font-variant-numeric:tabular-nums;min-width:2.6em}
 </style>
@@ -90,6 +92,7 @@ input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
       <select id="lang"><option value="zh">中文</option><option value="both">中文＋越南文 Trung + Việt</option></select></label>
     <label for="rate">語音速度 <span class="vi">Tốc độ đọc</span>
       <input type="range" id="rate" min="0.4" max="1.6" step="0.1" value="0.8"><output id="rateOut" for="rate">0.8×</output></label>
+    <label for="descOn"><input type="checkbox" id="descOn" checked> 解釋圖形 <span class="vi">Mô tả hình vẽ</span></label>
   </div>
 
   <div id="loading" class="card">載入題目中… <span class="vi">Đang tải câu hỏi…</span></div>
@@ -99,6 +102,7 @@ input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
     <div class="card">
       <div class="meta"><span class="num" id="sNum"></span><span id="sSec"></span></div>
       <div class="pic" id="sPic" hidden><img id="sImg" alt="題目圖示"></div>
+      <p class="desc" id="sDesc" hidden></p>
       <p class="stem" id="sStem"></p>
       <ol class="opts" id="sOpts"></ol>
       <div class="answer" id="sAns" hidden></div>
@@ -141,6 +145,7 @@ input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
     <div class="card">
       <div class="meta"><span class="num" id="eNum"></span><span id="eDone"></span></div>
       <div class="pic" id="ePic" hidden><img id="eImg" alt="題目圖示"></div>
+      <p class="desc" id="eDesc" hidden></p>
       <p class="stem" id="eStem"></p>
       <div class="opts" id="eOpts"></div>
       <button id="eRead" class="big" hidden>讀給我聽<span class="vi">Đọc cho tôi nghe</span></button>
@@ -176,7 +181,7 @@ const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const SECS=[[424,'架構一 正確觀念與態度'],[654,'架構二 主動停讓文化'],[1090,'架構三 安全駕駛能力']];
 const DIGIT=['','一','二','三'];
-let Q=[],VI=[],IMG={},cur=0,maxSeen=0,revealed=false,speakToken=0,exam=null;
+let Q=[],VI=[],DESC={},IMG={},cur=0,maxSeen=0,revealed=false,speakToken=0,exam=null;
 
 function show(name){for(const s of ['loading','study','setup','exam','result'])$(s).hidden=s!==name;
   $('modeBtn').hidden=name!=='study'; $('prefs').hidden=name==='loading'||name==='result'; stopSpeak(); window.scrollTo(0,0)}
@@ -187,6 +192,9 @@ function both(){return $('lang').value==='both'}
 function viStem(q){if(!both())return '';const v=VI[q.n-1];return (v&&v.q)||(!q.q&&q.i?'Xem hình và chọn ý nghĩa đúng.':'')}
 function viOpt(q,k){if(!both())return '';const v=VI[q.n-1];return (v&&v.o&&v.o[k])||''}
 function fill(el,zh,vt){el.textContent=zh;if(vt){const s=document.createElement('span');s.className='vt';s.lang='vi';s.textContent=vt;el.append(s)}}
+function descOf(q){return ($('descOn').checked&&q.i&&DESC[q.n])||null}
+function setDesc(el,q){const d=descOf(q); if(d){fill(el,'圖形說明：'+d.zh,both()?'Mô tả hình: '+d.vi:'');el.hidden=false}else el.hidden=true}
+function descPart(q,el){const d=descOf(q);return d?[{text:'圖形說明。'+d.zh,el}]:[]}
 function refresh(){ if(!Q.length)return; if(!$('study').hidden){const r=revealed;renderStudy();if(r)reveal()} else if(exam&&!$('exam').hidden)renderExam() }
 
 /* ---------- 學習 ---------- */
@@ -194,7 +202,7 @@ function renderStudy(){
   const q=Q[cur]; revealed=false; stopSpeak();
   $('sNum').textContent='第 '+q.n+' 題 / 1090';
   $('sSec').textContent=SECS.find(s=>q.n<=s[0])[1];
-  setPic($('sPic'),$('sImg'),q);
+  setPic($('sPic'),$('sImg'),q); setDesc($('sDesc'),q);
   fill($('sStem'),stemText(q),viStem(q));
   const ol=$('sOpts'); ol.textContent='';
   q.o.forEach((o,k)=>{const li=document.createElement('li');li.className='opt';li.id='so'+k;
@@ -243,7 +251,7 @@ function readCurrent(){
   if(reading){stopSpeak();return}
   if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。Trình duyệt này không hỗ trợ đọc, hãy mở bằng Chrome hoặc Safari.');reveal();return}
   $('sWarn').hidden=true; if(synth&&(synth.speaking||synth.pending))synth.cancel();
-  const q=Q[cur]; const parts=[{text:'第'+q.n+'題。'+stemText(q),el:$('sStem')}];
+  const q=Q[cur]; const parts=[{text:'第'+q.n+'題。'+stemText(q),el:$('sStem')},...descPart(q,$('sDesc'))];
   q.o.forEach((o,k)=>parts.push({text:DIGIT[k+1]+'。'+(o||'第'+DIGIT[k+1]+'個圖'),el:$('so'+k)}));
   parts.push({before:reveal,text:'答案是，'+DIGIT[q.a]+'。'+(q.o[q.a-1]||''),el:$('sAns')});
   speakParts(parts);
@@ -252,7 +260,7 @@ function readExam(){
   if(reading){stopSpeak();return}
   if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。Trình duyệt này không hỗ trợ đọc, hãy mở bằng Chrome hoặc Safari.');return}
   $('eConfirm').hidden=true; if(synth&&(synth.speaking||synth.pending))synth.cancel();
-  const q=Q[exam.ids[exam.pos]]; const parts=[{text:stemText(q),el:$('eStem')}];
+  const q=Q[exam.ids[exam.pos]]; const parts=[{text:stemText(q),el:$('eStem')},...descPart(q,$('eDesc'))];
   q.o.forEach((o,k)=>parts.push({text:DIGIT[k+1]+'。'+(o||'第'+DIGIT[k+1]+'個圖'),el:$('eo'+k)}));
   speakParts(parts);
 }
@@ -270,7 +278,7 @@ function renderExam(){
   const q=Q[exam.ids[exam.pos]], N=exam.ids.length; stopSpeak(); $('eRead').hidden=!exam.sound;
   $('eNum').textContent='第 '+(exam.pos+1)+' / '+N+' 題';
   $('eDone').textContent='已作答 Đã làm '+Object.keys(exam.ans).length+' / '+N;
-  setPic($('ePic'),$('eImg'),q); fill($('eStem'),stemText(q),viStem(q));
+  setPic($('ePic'),$('eImg'),q); setDesc($('eDesc'),q); fill($('eStem'),stemText(q),viStem(q));
   const box=$('eOpts'); box.textContent='';
   q.o.forEach((o,k)=>{const bt=document.createElement('button');bt.type='button';bt.id='eo'+k;bt.className='opt'+(exam.ans[exam.pos]===k+1?' chosen':'');
     bt.setAttribute('aria-pressed',exam.ans[exam.pos]===k+1);
@@ -310,6 +318,7 @@ $('jump').onchange=e=>{const v=parseInt(e.target.value,10); if(v>=1&&v<=Q.length
 function showRate(){$('rateOut').textContent=(parseFloat($('rate').value)||0.8).toFixed(1)+'×'}
 $('rate').oninput=e=>{showRate();store.set('dq_rate',e.target.value)};
 $('lang').onchange=e=>{store.set('dq_lang',e.target.value);refresh()};
+$('descOn').onchange=e=>{store.set('dq_desc',e.target.checked?'1':'0');refresh()};
 $('modeBtn').onclick=()=>show('setup');
 $('backBtn').onclick=$('rStudy').onclick=()=>{show('study');renderStudy()};
 $('quitBtn').onclick=()=>{exam=null;show('study');renderStudy()};
@@ -324,6 +333,8 @@ function start(saved){
     maxSeen=Math.max(cur,parseInt(store.get('dq_max','0'),10)||0);
     const r=store.get('dq_rate',null); if(r)$('rate').value=r; showRate(); $('lang').value=store.get('dq_lang','both')==='zh'?'zh':'both';
     (window.QVI?Promise.resolve(window.QVI):fetch('vi.json').then(r=>r.json())).then(v=>{VI=v;refresh()}).catch(()=>{});
+    $('descOn').checked=store.get('dq_desc','1')!=='0';
+    (window.QDESC?Promise.resolve(window.QDESC):fetch('desc.json').then(r=>r.json())).then(v=>{DESC=v;refresh()}).catch(()=>{});
     show('study'); renderStudy();
     return (window.QIMG?Promise.resolve(window.QIMG):fetch('images.json').then(r=>r.json())).then(m=>{IMG=m; if(!$('study').hidden){const q=Q[cur];setPic($('sPic'),$('sImg'),q)} else if(exam)renderExam()});
   }).catch(()=>{$('loading').textContent='題目載入失敗，請重新整理頁面。 Không tải được câu hỏi, hãy tải lại trang.'});

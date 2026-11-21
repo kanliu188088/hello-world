@@ -12,5 +12,5 @@ with open(out, 'w', encoding='utf-8') as f:
             '<meta name="apple-mobile-web-app-title" content="汽車筆試練習">'
             '<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>'
             '<script>window.QDATA=' + rd('questions.json') + ';\nwindow.QIMG=' + rd('images.json') +
-            ';\nwindow.QVI=' + rd('vi.json') + ';</script></head><body>\n' + page + '\n</body></html>')
+            ';\nwindow.QVI=' + rd('vi.json') + ';\nwindow.QDESC=' + rd('desc.json') + ';</script></head><body>\n' + page + '\n</body></html>')
 print(out, os.path.getsize(out))
