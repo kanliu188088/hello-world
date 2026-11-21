@@ -7,7 +7,7 @@ Study and mock-exam app for the Taiwan car written test question bank (1,090 que
 
 ## Layout
 
-- `web/` — the page (`driving-quiz.html`) and its data (`questions.json`, `images.json`, and `vi.json`, an unofficial machine translation of every question into Vietnamese).
+- `web/` — the page (`driving-quiz.html`) and its data (`questions.json`, `images.json`, and `vi.json`, an unofficial machine translation of every question into Vietnamese; `desc.json`, AI-written descriptions of the 192 pictures in Chinese and Vietnamese).
 - `android/` — WebView wrapper with a native text-to-speech bridge, and the APK build scripts.
 - `extract/` — scripts that produced the data from the question-bank PDF (PDF not included).
 
