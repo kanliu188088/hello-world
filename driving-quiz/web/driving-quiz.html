@@ -242,7 +242,7 @@ function warn(t,settings){const w=exam?$('eConfirm'):$('sWarn');w.textContent=t;
 function readCurrent(){
   if(reading){stopSpeak();return}
   if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。Trình duyệt này không hỗ trợ đọc, hãy mở bằng Chrome hoặc Safari.');reveal();return}
-  $('sWarn').hidden=true; if(synth)synth.cancel();
+  $('sWarn').hidden=true; if(synth&&(synth.speaking||synth.pending))synth.cancel();
   const q=Q[cur]; const parts=[{text:'第'+q.n+'題。'+stemText(q),el:$('sStem')}];
   q.o.forEach((o,k)=>parts.push({text:DIGIT[k+1]+'。'+(o||'第'+DIGIT[k+1]+'個圖'),el:$('so'+k)}));
   parts.push({before:reveal,text:'答案是，'+DIGIT[q.a]+'。'+(q.o[q.a-1]||''),el:$('sAns')});
@@ -251,7 +251,7 @@ function readCurrent(){
 function readExam(){
   if(reading){stopSpeak();return}
   if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。Trình duyệt này không hỗ trợ đọc, hãy mở bằng Chrome hoặc Safari.');return}
-  $('eConfirm').hidden=true; if(synth)synth.cancel();
+  $('eConfirm').hidden=true; if(synth&&(synth.speaking||synth.pending))synth.cancel();
   const q=Q[exam.ids[exam.pos]]; const parts=[{text:stemText(q),el:$('eStem')}];
   q.o.forEach((o,k)=>parts.push({text:DIGIT[k+1]+'。'+(o||'第'+DIGIT[k+1]+'個圖'),el:$('eo'+k)}));
   speakParts(parts);

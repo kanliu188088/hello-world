@@ -11,6 +11,14 @@ Study and mock-exam app for the Taiwan car written test question bank (1,090 que
 - `android/` — WebView wrapper with a native text-to-speech bridge, and the APK build scripts.
 - `extract/` — scripts that produced the data from the question-bank PDF (PDF not included).
 
+## Single-file version (Safari on iPhone, iPad, Mac)
+
+```bash
+python3 web/make_single.py
+```
+
+Writes `web/driving-quiz-offline.html`, one file with all data inlined. It uses the browser's own Chinese (zh-TW) voice.
+
 ## Build the APK
 
 ```bash
