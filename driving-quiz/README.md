@@ -1,6 +1,6 @@
 # 汽車筆試題庫練習 (driving test practice)
 
-Study and mock-exam app for the Taiwan car written test question bank (1,090 questions, Chinese, with Vietnamese button labels).
+Study and mock-exam app for the Taiwan car written test question bank (1,090 questions, Chinese interface, optional Vietnamese line under each question).
 
 - **Study**: one question at a time; "讀給我聽" reads the question and options aloud in Chinese, then shows and reads the answer.
 - **Exam**: random questions, silent, no answers shown; score and wrong-answer review at the end.
@@ -10,6 +10,14 @@ Study and mock-exam app for the Taiwan car written test question bank (1,090 que
 - `web/` — the page (`driving-quiz.html`) and its data (`questions.json`, `images.json`, and `vi.json`, an unofficial machine translation of every question into Vietnamese; `desc.json`, AI-written descriptions of the 192 pictures in Chinese and Vietnamese).
 - `android/` — WebView wrapper with a native text-to-speech bridge, and the APK build scripts.
 - `extract/` — scripts that produced the data from the question-bank PDF (PDF not included).
+
+## GitHub Pages
+
+`index.html` in this folder is the single-file build, so once this folder is on the branch GitHub Pages serves, the app is at `https://<user>.github.io/<repo>/driving-quiz/`. Regenerate it after changing anything in `web/`:
+
+```bash
+python3 web/make_single.py index.html
+```
 
 ## Single-file version (Safari on iPhone, iPad, Mac)
 

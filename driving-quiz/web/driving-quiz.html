@@ -83,19 +83,19 @@ input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
 
 <div class="wrap">
   <header>
-    <h1>汽車筆試題庫 練習<small>Luyện thi lý thuyết lái xe ô tô · 1090 題</small></h1>
-    <button id="modeBtn" class="primary">開始考試<span class="vi">Bắt đầu thi</span></button>
+    <h1>汽車筆試題庫 練習<small>新版汽車筆試題庫 · 1090 題</small></h1>
+    <button id="modeBtn" class="primary">開始考試</button>
   </header>
 
   <div class="tools" id="prefs" hidden>
-    <label for="lang">顯示 <span class="vi">Hiển thị</span>
-      <select id="lang"><option value="zh">中文</option><option value="both">中文＋越南文 Trung + Việt</option></select></label>
-    <label for="rate">語音速度 <span class="vi">Tốc độ đọc</span>
+    <label for="lang">顯示
+      <select id="lang"><option value="zh">中文</option><option value="both">中文＋越南文</option></select></label>
+    <label for="rate">語音速度
       <input type="range" id="rate" min="0.4" max="1.6" step="0.1" value="0.8"><output id="rateOut" for="rate">0.8×</output></label>
-    <label for="descOn"><input type="checkbox" id="descOn" checked> 解釋圖形 <span class="vi">Mô tả hình vẽ</span></label>
+    <label for="descOn"><input type="checkbox" id="descOn" checked> 解釋圖形</label>
   </div>
 
-  <div id="loading" class="card">載入題目中… <span class="vi">Đang tải câu hỏi…</span></div>
+  <div id="loading" class="card">載入題目中…</div>
 
   <!-- 學習 -->
   <section id="study" hidden class="wrap">
@@ -108,35 +108,35 @@ input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
       <div class="answer" id="sAns" hidden></div>
       <div id="sWarn" class="warn" hidden></div>
       <div class="row">
-        <button id="readBtn" class="primary big">讀給我聽<span class="vi">Đọc cho tôi nghe</span></button>
-        <button id="ansBtn" class="big">看答案<span class="vi">Xem đáp án</span></button>
+        <button id="readBtn" class="primary big">讀給我聽</button>
+        <button id="ansBtn" class="big">看答案</button>
       </div>
       <div class="row">
-        <button id="prevBtn">← 上一題<span class="vi">Câu trước</span></button>
-        <button id="nextBtn">下一題 →<span class="vi">Câu sau</span></button>
+        <button id="prevBtn">← 上一題</button>
+        <button id="nextBtn">下一題 →</button>
       </div>
     </div>
     <div class="tools">
-      <label for="jump">跳到第 <input type="number" id="jump" min="1" max="1090" inputmode="numeric"> 題 <span class="vi">Đến câu</span></label>
+      <label for="jump">跳到第 <input type="number" id="jump" min="1" max="1090" inputmode="numeric"> 題</label>
     </div>
-    <p class="note">按「讀給我聽」會用中文念題目和三個選項，念完後顯示並念出答案。<br><span class="vi">Bấm “Đọc” để nghe câu hỏi và 3 lựa chọn bằng tiếng Trung, sau đó sẽ hiện đáp án.</span></p>
+    <p class="note">按「讀給我聽」會用中文念題目和三個選項，念完後顯示並念出答案。</p>
   </section>
 
   <!-- 考試設定 -->
   <section id="setup" hidden class="card">
-    <h2>模擬考試 <span class="vi">Thi thử</span></h2>
-    <p class="note">考試時不會顯示答案。聲音可以選擇開或關。85 分及格。<br><span class="vi">Khi thi sẽ không hiện đáp án. Có thể chọn bật hoặc tắt âm thanh. Đạt từ 85 điểm.</span></p>
+    <h2>模擬考試</h2>
+    <p class="note">考試時不會顯示答案。聲音可以選擇開或關。85 分及格。</p>
     <div class="tools">
-      <label for="exCount">題數 <span class="vi">Số câu</span>
+      <label for="exCount">題數
         <select id="exCount"><option>10</option><option>20</option><option selected>40</option><option>50</option></select></label>
-      <label for="exSound">聲音 <span class="vi">Âm thanh</span>
-        <select id="exSound"><option value="off">不出聲 Không đọc</option><option value="on">可以念題目 Có đọc câu hỏi</option></select></label>
-      <label for="exScope">範圍 <span class="vi">Phạm vi</span>
-        <select id="exScope"><option value="all">全部 1090 題 Tất cả</option><option value="seen">只考學過的題目 Chỉ câu đã học</option></select></label>
+      <label for="exSound">聲音
+        <select id="exSound"><option value="off">不出聲</option><option value="on">可以念題目</option></select></label>
+      <label for="exScope">範圍
+        <select id="exScope"><option value="all">全部 1090 題</option><option value="seen">只考學過的題目</option></select></label>
     </div>
     <div class="row">
-      <button id="backBtn">← 回去學習<span class="vi">Quay lại học</span></button>
-      <button id="startBtn" class="primary">開始<span class="vi">Bắt đầu</span></button>
+      <button id="backBtn">← 回去學習</button>
+      <button id="startBtn" class="primary">開始</button>
     </div>
   </section>
 
@@ -148,28 +148,28 @@ input[type=range]{width:9em;max-width:40vw;accent-color:var(--sign)}
       <p class="desc" id="eDesc" hidden></p>
       <p class="stem" id="eStem"></p>
       <div class="opts" id="eOpts"></div>
-      <button id="eRead" class="big" hidden>讀給我聽<span class="vi">Đọc cho tôi nghe</span></button>
+      <button id="eRead" class="big" hidden>讀給我聽</button>
       <div class="row">
-        <button id="ePrev">← 上一題<span class="vi">Câu trước</span></button>
-        <button id="eNext" class="primary">下一題 →<span class="vi">Câu sau</span></button>
+        <button id="ePrev">← 上一題</button>
+        <button id="eNext" class="primary">下一題 →</button>
       </div>
     </div>
     <div class="dots" id="eDots"></div>
     <div id="eConfirm" class="warn" hidden></div>
     <div class="row">
-      <button id="quitBtn">放棄考試<span class="vi">Thoát</span></button>
-      <button id="submitBtn" class="primary">交卷<span class="vi">Nộp bài</span></button>
+      <button id="quitBtn">放棄考試</button>
+      <button id="submitBtn" class="primary">交卷</button>
     </div>
   </section>
 
   <!-- 成績 -->
   <section id="result" hidden class="card">
-    <h2>成績 <span class="vi">Kết quả</span></h2>
+    <h2>成績</h2>
     <div class="score" id="rScore"></div>
     <div id="rText"></div>
     <div class="row">
-      <button id="rStudy">回去學習<span class="vi">Quay lại học</span></button>
-      <button id="rAgain" class="primary">再考一次<span class="vi">Thi lại</span></button>
+      <button id="rStudy">回去學習</button>
+      <button id="rAgain" class="primary">再考一次</button>
     </div>
     <div class="review" id="rReview"></div>
   </section>
@@ -215,7 +215,7 @@ function renderStudy(){
 function reveal(){
   const q=Q[cur]; revealed=true;
   document.querySelectorAll('#sOpts .opt').forEach((li,k)=>li.classList.toggle('correct',k===q.a-1));
-  fill($('sAns'),'答案 Đáp án：('+q.a+') '+(q.o[q.a-1]||''),viOpt(q,q.a-1));
+  fill($('sAns'),'答案：('+q.a+') '+(q.o[q.a-1]||''),viOpt(q,q.a-1));
   $('sAns').hidden=false;
 }
 function go(i){cur=Math.max(0,Math.min(Q.length-1,i));renderStudy()}
@@ -238,18 +238,18 @@ function speakParts(parts,done){
     if(token!==speakToken)return;
     if(i>=parts.length){reading=false;setReadLabel(false);done&&done();return}
     const p=parts[i++]; if(p.before)p.before(); if(p.el)p.el.classList.add('reading');
-    if(NATIVE){ const id=String(++ttsId); ttsCb={id,fn:ok=>{ if(token!==speakToken)return; if(!ok){warn('手機沒有中文語音。請到「設定 → 文字轉語音」安裝中文（台灣）語音資料。 Điện thoại chưa có giọng đọc tiếng Trung. Vào Cài đặt → Chuyển văn bản thành giọng nói để cài tiếng Trung (Đài Loan).',true)} next() }};
+    if(NATIVE){ const id=String(++ttsId); ttsCb={id,fn:ok=>{ if(token!==speakToken)return; if(!ok){warn('手機沒有中文語音。請到「設定 → 文字轉語音」安裝中文（台灣）語音資料。',true)} next() }};
       NATIVE.speak(p.text,rate,id); return }
     const u=new SpeechSynthesisUtterance(p.text); u.lang='zh-TW'; if(voice)u.voice=voice; u.rate=rate;
-    u.onend=next; u.onerror=e=>{ if(token===speakToken){ if(e.error!=='interrupted'&&e.error!=='canceled')warn('這個裝置無法朗讀中文。請改用 Chrome 或 Safari 瀏覽器開啟。Thiết bị này không đọc được tiếng Trung, hãy mở bằng Chrome hoặc Safari.'); next() } };
+    u.onend=next; u.onerror=e=>{ if(token===speakToken){ if(e.error!=='interrupted'&&e.error!=='canceled')warn('這個裝置無法朗讀中文。請改用 Chrome 或 Safari 瀏覽器開啟。'); next() } };
     window._u=u; synth.speak(u);
   })();
 }
 function warn(t,settings){const w=exam?$('eConfirm'):$('sWarn');w.textContent=t;w.hidden=false;
-  if(settings&&NATIVE&&NATIVE.openSettings){const b=document.createElement('button');b.textContent='打開語音設定 Mở cài đặt';b.style.cssText='display:block;margin-top:8px';b.onclick=()=>NATIVE.openSettings();w.append(b)}}
+  if(settings&&NATIVE&&NATIVE.openSettings){const b=document.createElement('button');b.textContent='打開語音設定';b.style.cssText='display:block;margin-top:8px';b.onclick=()=>NATIVE.openSettings();w.append(b)}}
 function readCurrent(){
   if(reading){stopSpeak();return}
-  if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。Trình duyệt này không hỗ trợ đọc, hãy mở bằng Chrome hoặc Safari.');reveal();return}
+  if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。');reveal();return}
   $('sWarn').hidden=true; if(synth&&(synth.speaking||synth.pending))synth.cancel();
   const q=Q[cur]; const parts=[{text:'第'+q.n+'題。'+stemText(q),el:$('sStem')},...descPart(q,$('sDesc'))];
   q.o.forEach((o,k)=>parts.push({text:DIGIT[k+1]+'。'+(o||'第'+DIGIT[k+1]+'個圖'),el:$('so'+k)}));
@@ -258,7 +258,7 @@ function readCurrent(){
 }
 function readExam(){
   if(reading){stopSpeak();return}
-  if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。Trình duyệt này không hỗ trợ đọc, hãy mở bằng Chrome hoặc Safari.');return}
+  if(!NATIVE&&(!synth||typeof SpeechSynthesisUtterance==='undefined')){warn('這個瀏覽器不支援朗讀。請改用 Chrome 或 Safari 開啟。');return}
   $('eConfirm').hidden=true; if(synth&&(synth.speaking||synth.pending))synth.cancel();
   const q=Q[exam.ids[exam.pos]]; const parts=[{text:stemText(q),el:$('eStem')},...descPart(q,$('eDesc'))];
   q.o.forEach((o,k)=>parts.push({text:DIGIT[k+1]+'。'+(o||'第'+DIGIT[k+1]+'個圖'),el:$('eo'+k)}));
@@ -277,7 +277,7 @@ function startExam(){
 function renderExam(){
   const q=Q[exam.ids[exam.pos]], N=exam.ids.length; stopSpeak(); $('eRead').hidden=!exam.sound;
   $('eNum').textContent='第 '+(exam.pos+1)+' / '+N+' 題';
-  $('eDone').textContent='已作答 Đã làm '+Object.keys(exam.ans).length+' / '+N;
+  $('eDone').textContent='已作答 '+Object.keys(exam.ans).length+' / '+N;
   setPic($('ePic'),$('eImg'),q); setDesc($('eDesc'),q); fill($('eStem'),stemText(q),viStem(q));
   const box=$('eOpts'); box.textContent='';
   q.o.forEach((o,k)=>{const bt=document.createElement('button');bt.type='button';bt.id='eo'+k;bt.className='opt'+(exam.ans[exam.pos]===k+1?' chosen':'');
@@ -292,20 +292,20 @@ function renderExam(){
 }
 function submitExam(){
   const N=exam.ids.length, left=N-Object.keys(exam.ans).length;
-  if(left>0&&!exam.confirm){exam.confirm=true;$('eConfirm').textContent='還有 '+left+' 題沒有作答。再按一次「交卷」就會交卷。 Còn '+left+' câu chưa làm. Bấm “Nộp bài” lần nữa để nộp.';$('eConfirm').hidden=false;return}
+  if(left>0&&!exam.confirm){exam.confirm=true;$('eConfirm').textContent='還有 '+left+' 題沒有作答。再按一次「交卷」就會交卷。';$('eConfirm').hidden=false;return}
   let right=0; const wrong=[];
   exam.ids.forEach((id,i)=>{ if(exam.ans[i]===Q[id].a)right++; else wrong.push([id,exam.ans[i]]) });
   const score=Math.round(right/N*100), pass=score>=85;
   $('rScore').textContent=score+' 分'; $('rScore').className='score '+(pass?'pass':'fail');
-  $('rText').textContent=(pass?'及格 Đạt':'不及格 Chưa đạt')+' · 答對 Đúng '+right+' / '+N+' · 答錯 Sai '+wrong.length;
+  $('rText').textContent=(pass?'及格':'不及格')+' · 答對 '+right+' / '+N+' · 答錯 '+wrong.length;
   const rv=$('rReview'); rv.textContent='';
-  if(wrong.length){const h=document.createElement('h2');h.textContent='答錯的題目 Câu sai';rv.append(h)}
+  if(wrong.length){const h=document.createElement('h2');h.textContent='答錯的題目';rv.append(h)}
   wrong.forEach(([id,mine])=>{const q=Q[id],d=document.createElement('div');d.className='item';
     const p=document.createElement('p');const b=document.createElement('b');b.className='num';b.textContent='第 '+q.n+' 題 ';p.append(b,stemText(q));if(viStem(q)){const v=document.createElement('span');v.className='vt';v.lang='vi';v.textContent=viStem(q);p.append(v)}d.append(p);
     if(q.i&&IMG[q.n]){const im=document.createElement('img');im.src=IMG[q.n];im.alt='題目圖示';const w=document.createElement('div');w.className='pic'+(q.i===2?' full':'');w.append(im);d.append(w)}
-    const m=document.createElement('p');m.className='fail';fill(m,'你的答案 Bạn chọn：'+(mine?'('+mine+') '+(q.o[mine-1]||''):'沒有作答 Chưa làm'),mine?viOpt(q,mine-1):'');
-    const c=document.createElement('p');c.className='pass';fill(c,'正確答案 Đáp án：('+q.a+') '+(q.o[q.a-1]||''),viOpt(q,q.a-1));
-    const g=document.createElement('button');g.textContent='去學這一題 Học câu này';g.onclick=()=>{show('study');go(id)};
+    const m=document.createElement('p');m.className='fail';fill(m,'你的答案：'+(mine?'('+mine+') '+(q.o[mine-1]||''):'沒有作答'),mine?viOpt(q,mine-1):'');
+    const c=document.createElement('p');c.className='pass';fill(c,'正確答案：('+q.a+') '+(q.o[q.a-1]||''),viOpt(q,q.a-1));
+    const g=document.createElement('button');g.textContent='去學這一題';g.onclick=()=>{show('study');go(id)};
     d.append(m,c,g);rv.append(d)});
   stopSpeak(); exam=null; show('result');
 }
@@ -331,13 +331,13 @@ function start(saved){
   (window.QDATA?Promise.resolve(window.QDATA):fetch('questions.json').then(r=>r.json())).then(d=>{
     Q=d; cur=Math.min(Q.length-1,parseInt((saved&&saved.cur)??store.get('dq_cur','0'),10)||0);
     maxSeen=Math.max(cur,parseInt(store.get('dq_max','0'),10)||0);
-    const r=store.get('dq_rate',null); if(r)$('rate').value=r; showRate(); $('lang').value=store.get('dq_lang','both')==='zh'?'zh':'both';
+    const r=store.get('dq_rate',null); if(r)$('rate').value=r; showRate(); $('lang').value=store.get('dq_lang','zh')==='both'?'both':'zh';
     (window.QVI?Promise.resolve(window.QVI):fetch('vi.json').then(r=>r.json())).then(v=>{VI=v;refresh()}).catch(()=>{});
     $('descOn').checked=store.get('dq_desc','1')!=='0';
     (window.QDESC?Promise.resolve(window.QDESC):fetch('desc.json').then(r=>r.json())).then(v=>{DESC=v;refresh()}).catch(()=>{});
     show('study'); renderStudy();
     return (window.QIMG?Promise.resolve(window.QIMG):fetch('images.json').then(r=>r.json())).then(m=>{IMG=m; if(!$('study').hidden){const q=Q[cur];setPic($('sPic'),$('sImg'),q)} else if(exam)renderExam()});
-  }).catch(()=>{$('loading').textContent='題目載入失敗，請重新整理頁面。 Không tải được câu hỏi, hãy tải lại trang.'});
+  }).catch(()=>{$('loading').textContent='題目載入失敗，請重新整理頁面。'});
 }
 const hot=window.claude&&window.claude.hot;
 if(hot&&hot.snapshot)hot.snapshot(()=>({cur}));
